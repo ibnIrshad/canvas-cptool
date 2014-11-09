@@ -25,7 +25,7 @@ Be aware that I have many requirements including memcache (for caching) and mmh3
 
 In a nutshell:
 
-```
+```python
 cherrypy.tools.canvas = CanvasLMSTool.CanvasLMSTool(CANVAS_URL, CANVAS_CLIENT_ID, CANVAS_CLIENT_SECRET, MC)
 canvas = cherrypy.tools.canvas # just a shortcut var name
 
