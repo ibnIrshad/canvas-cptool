@@ -23,7 +23,21 @@ Be aware that I have many requirements including memcache (for caching) and mmh3
 
 # Usage & Example
 
-See my example cherrypy app called testCanvasTool.py.  Also read the docstrings in CanvasLMSTool.py to learn the parameter types.
+In a nutshell:
+
+```
+cherrypy.tools.canvas = CanvasLMSTool.CanvasLMSTool(CANVAS_URL, CANVAS_CLIENT_ID, CANVAS_CLIENT_SECRET, MC)
+canvas = cherrypy.tools.canvas # just a shortcut var name
+
+@cherrypy.expose
+@cherrypy.tools.canvas() # this line of code makes sure that the user has an API token, or makes him perform the token request flow
+def mycourses(self):
+	# Get the Canvas user's list of courses and cache the result for 300 seconds
+    courses = canvas.api('get', '/api/v1/courses', ttl=300)
+    return course # returning a plain simplejson object
+```
+
+Read the docstrings in CanvasLMSTool.py to learn the parameter types.
 
 testCanvasTool.py is an example of how to protect a CherryPy page by requiring a Canvas API token, performing the token request flow (with the @decorator), and making a cached API call to view the user's current courses.
 
