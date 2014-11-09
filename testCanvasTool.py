@@ -33,9 +33,6 @@ cherrypy.config.update({'server.socket_host': '0.0.0.0',
                         'server.socket_port': 80,
                        })
 
-# remove any limit on the request body size for large file uploads cherrypy's default is 100MB
-# (maybe we should just increase it ?)
-cherrypy.server.max_request_body_size = 0
 
 cherrypy.quickstart(testCanvasTool(), '/', 'testCanvasTool.conf')
 

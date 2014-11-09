@@ -11,6 +11,8 @@ LOGOUT_URL = '/logout'
 class CanvasLMSTool(cherrypy.Tool):
 
     def __init__(self, canvas_url, canvas_client_id, canvas_client_secret, memcache_client=None):
+        '''(CanvasLMSTool, str, str, str, memcache.Client) -> None'''
+
         cherrypy.Tool.__init__(self, 'before_handler', self.get_canvas_user, priority=1)
         self.token = None
         self.canvas_url = canvas_url
@@ -19,8 +21,10 @@ class CanvasLMSTool(cherrypy.Tool):
         self.MC = memcache_client
 
     def get_canvas_user(self):
-        # Performs Canvas OAuth login routine if necessary and injects canvas_user into cherrypy.request.params which represents
-        # the current logged in user and their respective API key for Canvas
+        '''(CanvasLMSTool) -> json
+
+        Perform a Canvas OAuth login routine if necessary and inject canvas_user into cherrypy.request.params which represents
+        the current logged in user and their respective API key for Canvas (in canvas_user['token'])'''
 
         req = cherrypy.request
 
@@ -89,6 +93,11 @@ class CanvasLMSTool(cherrypy.Tool):
 
 
     def api(self, reqtype, endpoint, data=None, headers=None, ttl=180, error_msg=None):
+        '''(CanvasLMSTool, str, dict or str, dict, int (number of seconds to live), str) -> json
+
+        Return a json object which is the result of a Canvas API call to endpoint, and cache the request for ttl seconds.
+        Raise an Exception with error_msg text in case of failure.'''
+
         endpoint = str(endpoint)
         assert reqtype in ['get', 'post', 'put', 'delete']
         assert isinstance(endpoint, str) and endpoint.startswith('/')
