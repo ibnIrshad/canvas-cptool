@@ -5,8 +5,11 @@ import memcache
 # This file stores my CANVAS_CLIENT_ID and CANVAS_CLIENT_SECRET. I'm not going to release that on Github
 from secretglobals import *
 
+# Do not include the trailing slash - this is where your Canvas installation is located
+CANVAS_URL = 'https://learn.razigroup.org'
+
 MC = memcache.Client(['127.0.0.1:11211'], debug=0)
-cherrypy.tools.canvas = CanvasLMSTool.CanvasLMSTool('https://learn.razigroup.org', CANVAS_CLIENT_ID, CANVAS_CLIENT_SECRET, MC)
+cherrypy.tools.canvas = CanvasLMSTool.CanvasLMSTool(CANVAS_URL, CANVAS_CLIENT_ID, CANVAS_CLIENT_SECRET, MC)
 canvas = cherrypy.tools.canvas
 
 class testCanvasTool(object):
