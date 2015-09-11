@@ -152,4 +152,27 @@ class CanvasLMSTool(cherrypy.Tool):
         return j
 
 
+    def refresh(self):
+        '''Refresh the cache for all_courses (and any other pre-warmed caches to be built in the future)'''
+        self.all_courses_cache = []
+    
+    
+    def all_courses(self):
+        '''Recursively build and return a list of Courses at our Canvas instance. Cache the values in self.all_courses_cache, and return that next time'''
+
+        if self.all_courses_cache: return list(self.all_courses_cache)
+                
+        def courses_in_acc(acc_id):
+            courses = self.api('get', '/api/v1/accounts/' + str(acc_id) + '/courses')
+            
+            for sub_acc in self.api('get', '/api/v1/accounts/' + str(acc_id) + '/sub_accounts'):
+                courses.extend(courses_in_acc(sub_acc['id']))
+            
+            return courses
+            
+        self.all_courses_cache = courses_in_acc(1)
+        return self.all_courses_cache
+
+
+
 
