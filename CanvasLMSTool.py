@@ -157,10 +157,11 @@ class CanvasLMSTool(cherrypy.Tool):
         self.all_courses_cache = []
     
     
-    def all_courses(self):
-        '''Recursively build and return a list of Courses at our Canvas instance. Cache the values in self.all_courses_cache, and return that next time'''
+    def all_courses(self, acc=1):
+        '''Recursively build and return a list of Courses in Account with id acc. Cache the values in self.all_courses_cache, and return that next time'''
 
-        if self.all_courses_cache: return list(self.all_courses_cache)
+        # Return cached value if exists
+        if self.all_courses_cache.get(acc): return list(self.all_courses_cache[acc])
                 
         def courses_in_acc(acc_id):
             courses = self.api('get', '/api/v1/accounts/' + str(acc_id) + '/courses')
@@ -169,9 +170,14 @@ class CanvasLMSTool(cherrypy.Tool):
                 courses.extend(courses_in_acc(sub_acc['id']))
             
             return courses
-            
-        self.all_courses_cache = courses_in_acc(1)
-        return self.all_courses_cache
+        
+        if hasattr(self, 'all_courses_cache'):
+            # init cache
+            self.all_courses_cache[acc] = courses_in_acc(acc)
+        else:
+            self.all_courses_cache = {acc: courses_in_acc()}
+
+        return self.all_courses_cache[acc]
 
 
 
