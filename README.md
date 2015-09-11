@@ -1,11 +1,10 @@
 canvas-cptool
 =============
 
-I am a CherryPy tool for authenticating and making calls to the [Canvas LMS API](https://canvas.instructure.com/doc/api/).
+A CherryPy tool for authenticating and making calls to the [Canvas LMS API](https://canvas.instructure.com/doc/api/), a learning management software.
 
 # Features
 
-I can:
 * Abstract away the entire OAuth2 Token Request Flow in a single line of code
 * Prevent access to a page using a python decorator for a user without Canvas authentication (i.e. a valid token)
 * Make memcachable API calls in one line
@@ -39,7 +38,17 @@ def mycourses(self):
 
 The docstrings in CanvasLMSTool.py offer some additional info on the parameter types.
 
-testCanvasTool.py is a basic example of a CherryPy app with the above in practice.
+testCanvasTool.py is a basic example of a CherryPy app with the above in practice. 
+
+## all_courses method
+
+One you have instantiated the tool (like the `canvas` global in the example above), you may access a recursively built list of ALL the courses in your Canvas Account. Why? Because it is needlessly difficult to do this with the current Canvas API, finding and retrieving the courses at each sub-Account.
+
+```python
+all_my_courses = canvas.all_courses(1) # this var now contains a list of Course objects from Account ID 1 and all sub Accounts
+```
+
+Of course why stop at all_courses? This method is intended to serve as a template for other potential pre-warmed caches you may need. Unfortunately it is primitive, and flushing the cache can be done by calling `canvas.refresh()` 
 
 # FAQ
 
